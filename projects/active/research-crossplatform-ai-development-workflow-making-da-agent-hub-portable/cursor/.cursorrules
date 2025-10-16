@@ -1,0 +1,710 @@
+# DA Agent Hub - Cursor Adapter
+# Version: 1.0
+# Analytics Development Lifecycle (ADLC) AI Platform - Cursor Implementation
+
+You are operating within the DA Agent Hub, a structured ADLC workflow system for analytics development. This system provides a non-linear workflow with multiple entry points based on user context.
+
+## System Overview
+
+The DA Agent Hub implements the complete Analytics Development Lifecycle with:
+- **Idea Management**: GitHub Issues-based idea capture and tracking
+- **Project Structure**: Standardized project organization in projects/active/
+- **Agent Coordination**: Role-based agents with specialist delegation
+- **Knowledge Preservation**: Automated pattern extraction and memory system
+- **Git Workflow**: Integrated version control and worktree management
+
+## Core Workflow Commands
+
+### /research <text|issue-number>
+**Purpose**: Deep exploratory analysis for fuzzy ideas
+
+**When to use**:
+- User has a vague idea needing feasibility analysis
+- Unclear scope, need to understand implications
+- Complex architectural decision requiring investigation
+
+**Execution**:
+1. Run: `./scripts/research.sh "<input>"`
+2. Display script output with formatting
+3. Create research project in `projects/active/research-*/`
+4. Load project files into Composer context:
+   - `spec.md` - Research objectives
+   - `context.md` - Working state
+   - `tasks/current-task.md` - Active analysis
+
+**Response format**:
+```
+🔬 Starting research project...
+📁 Project: projects/active/research-<name>/
+📋 Research objectives loaded
+
+✅ Research project created!
+
+🎯 Next steps:
+   1. Review research objectives: projects/active/research-<name>/spec.md
+   2. Begin analysis with specialist agents (see Agent Coordination below)
+   3. After analysis: /capture "findings" OR /start "implementation"
+```
+
+**Leads to**:
+- `/capture` - If research validates idea, store for roadmap
+- `/start` - If clear path found, begin implementation immediately
+- Abandon - If blockers or low ROI identified
+
+---
+
+### /capture <idea-text>
+**Purpose**: Quick idea storage with GitHub issue creation
+
+**When to use**:
+- User has a clear idea to remember
+- Brainstorming session, capturing multiple ideas
+- Want to store for later prioritization
+
+**Execution**:
+1. Run: `./scripts/capture.sh "<idea>"`
+2. GitHub issue created automatically with:
+   - 'idea' label
+   - Auto-categorized labels (bi-analytics, data-engineering, etc.)
+   - ADLC context in description
+3. Display issue URL and number
+
+**Optional**: Help flesh out idea if user wants
+- Ask clarifying questions about requirements
+- Enhance issue description with details
+- Add success criteria and constraints
+
+**Response format**:
+```
+💡 Capturing idea...
+📝 Idea: <user input>
+📋 Detected type: <category>
+
+✅ GitHub issue created successfully!
+🔗 Issue #<number>: <URL>
+
+🎯 Next steps:
+   - View all ideas: gh issue list --label idea
+   - Deep analysis: /research <number>
+   - Start building: /start <number>
+   - Prioritize in GitHub: Add milestones, labels
+
+💡 Use GitHub's native issue management for prioritization and roadmap planning
+```
+
+**Leads to**:
+- GitHub issue management (prioritization, milestones)
+- `/research <issue#>` - Deeper analysis before building
+- `/start <issue#>` - When prioritized and ready
+
+---
+
+### /start <issue-number|idea-text>
+**Purpose**: Begin development (from GitHub issue or ad-hoc)
+
+**When to use**:
+- Ready to build a specific GitHub issue
+- Need to start NOW, create issue on-the-fly
+- Implement idea without prior capture/research
+
+**Execution**:
+1. If numeric input: Fetch GitHub issue details
+2. If text input: Create GitHub issue first, then proceed
+3. Run: `./scripts/start.sh "<input>"`
+4. Create project structure in `projects/active/feature-*/`
+5. Link project ↔ GitHub issue (comment + labels)
+6. Add 'in-progress' label to issue
+7. Create git worktree if configured
+
+**Immediately load into Composer context**:
+- `README.md` - Navigation hub
+- `spec.md` - Project specification from issue
+- `context.md` - Dynamic state tracking
+- `tasks/current-task.md` - Agent coordination
+
+**Response format**:
+```
+🚀 Starting project from GitHub issue #<number>
+📋 Issue: <title>
+🏗️  Creating project structure...
+
+✅ Project successfully created!
+📁 Project location: projects/active/feature-<name>/
+🔗 Linked to: <GitHub issue URL>
+
+📂 Files loaded in Composer:
+   - README.md (navigation)
+   - spec.md (requirements)
+   - context.md (current state)
+   - tasks/ (agent coordination)
+
+🎯 Next steps:
+   1. Review spec.md for requirements
+   2. Begin development with specialist agents
+   3. Update context.md with progress
+   4. When complete: /complete feature-<name>
+```
+
+**Leads to**:
+- Active development work
+- `/switch` - Context change needed
+- `/pause` - Save progress
+- `/complete` - Finished
+
+---
+
+### /switch [branch-name]
+**Purpose**: Context switch with work preservation
+
+**When to use**:
+- Urgent issue came up, need to change projects
+- Finished current work, move to next priority
+- Review something else without losing context
+
+**Execution**:
+1. Run: `./scripts/switch.sh "[branch]"`
+2. Commits current work (WIP commit)
+3. Pushes to remote (backup)
+4. Switches to specified branch or main
+5. Clean working directory
+
+**Response format**:
+```
+🔄 Saving current work...
+   ✅ Changes committed (WIP)
+   ✅ Pushed to remote (backup)
+
+🌿 Switching to: <branch-name|main>
+   ✅ Clean working directory
+
+🎯 Next steps:
+   - Start new work: /start <issue#>
+   - Review different project
+   - Return to original: /switch <original-branch>
+```
+
+**Leads to**:
+- New `/start` for different project
+- Work on different existing branch
+- Return to original work later (preserved)
+
+---
+
+### /pause [description]
+**Purpose**: Save conversation state for resumption
+
+**When to use**:
+- Need to stop but resume exactly where left off
+- End of day, continue tomorrow
+- Complex problem, need to step away
+
+**Note**: Cursor implementation uses Composer history + context.md updates
+
+**Execution**:
+1. Update `context.md` with current state:
+   - Current work
+   - Decisions made
+   - Blockers encountered
+   - Next steps planned
+2. Save Composer context (files in conversation)
+3. Provide resumption instructions
+
+**Response format**:
+```
+💾 Saving conversation state...
+   ✅ Updated: context.md with current state
+   ✅ Composer files preserved in history
+
+📋 Resumption instructions:
+   1. Open this project directory
+   2. Load context files into new Composer chat:
+      @spec.md @context.md @tasks/current-task.md
+   3. Reference this conversation history
+   4. Continue where you left off
+
+💡 Current state saved to context.md:
+   <summary of pause description>
+```
+
+**Leads to**:
+- New Cursor session later
+- Conversation resume with full context
+
+---
+
+### /complete <project-name>
+**Purpose**: Archive project and extract learnings
+
+**When to use**:
+- Project finished, archive and learn
+- Feature deployed, extract patterns
+- Implementation done, update agent knowledge
+
+**Execution** (Two-phase with approval):
+
+**Phase 1: Analysis & Proposal**
+1. Load ALL project files into context:
+   - `spec.md`, `context.md`, `README.md`
+   - All files in `tasks/` (findings, requests)
+2. Analyze for extractable knowledge:
+   - Technical patterns and solutions
+   - Agent improvements (confidence scores)
+   - New documentation needed
+3. **PROPOSE changes before making them**:
+   - List agent files to update
+   - Show exact content additions
+   - Identify new knowledge documents
+   - Request explicit approval
+
+**Phase 2: Execution (After Approval)**
+4. Apply approved updates to:
+   - `.claude/agents/` (role and specialist files)
+   - `knowledge/` (new patterns, documentation)
+   - Confidence scores (performance-based)
+5. Run: `./scripts/finish.sh "<project-name>"`
+6. Archive to `projects/completed/YYYY-MM/`
+7. Close linked GitHub issue
+8. Remove git worktree (if used)
+9. Extract patterns to `.claude/memory/recent/`
+
+**Response format**:
+```
+🔍 Analyzing project for knowledge extraction...
+📊 Reading project files:
+   - spec.md, context.md, README.md
+   - tasks/ findings and analysis
+
+💡 Proposed Knowledge Updates:
+
+### Agent Files to Update:
+📝 .claude/agents/roles/analytics-engineer-role.md
+   + New pattern: <description>
+   + Confidence: +0.10 for <domain>
+   [show exact additions]
+
+📝 .claude/agents/specialists/dbt-expert.md
+   + Enhanced: <specific improvement>
+   + Confidence: +0.08
+   [show exact additions]
+
+### New Knowledge Documents:
+📄 knowledge/da-agent-hub/<new-pattern>.md
+   + <purpose and outline>
+
+### Automatic Extraction:
+🤖 finish.sh will extract patterns from tasks/ to memory/recent/
+
+🤔 **Should I proceed with these knowledge updates?**
+   - Type 'yes' to execute all proposed changes
+   - Type 'modify' to adjust specific updates
+   - Type 'skip' to complete without knowledge updates
+
+[After approval...]
+
+✅ Executing approved knowledge updates...
+   ✅ Updated: analytics-engineer-role.md
+   ✅ Updated: dbt-expert.md
+   ✅ Added: knowledge/da-agent-hub/<pattern>.md
+
+📦 Archiving project...
+   ✅ Moved to: projects/completed/2025-10/<name>/
+   ✅ Patterns extracted to memory/recent/
+   ✅ GitHub issue #<number> closed
+
+🔀 Git workflow options:
+   1. Create PR: gh pr create --title "..." --body "..."
+   2. Merge to main: git checkout main && git merge <branch>
+   3. Stay on branch: Continue working
+
+💡 Recommended: Create PR for review
+
+✅ Project completed with knowledge preserved!
+```
+
+**Leads to**:
+- Enhanced agent capabilities
+- New patterns in knowledge base
+- New `/start` for next project
+
+---
+
+## Agent Coordination (Cursor-Specific)
+
+The DA Agent Hub uses **role-based agents** with **specialist delegation** based on confidence thresholds.
+
+### Role Agents (Primary - Handle 80% Independently)
+Located in `.claude/agents/roles/`:
+- `analytics-engineer-role.md` - SQL transformations, dbt, data modeling
+- `data-engineer-role.md` - Pipeline orchestration, ingestion, source integration
+- `data-architect-role.md` - System design, strategic decisions
+
+**Confidence-Based Delegation**:
+- ≥0.85: Handle directly
+- 0.60-0.84: May collaborate with specialists
+- <0.60: Delegate to specialist
+
+### Specialist Agents (Consultation - 20% Edge Cases)
+Located in `.claude/agents/specialists/`:
+- `dbt-expert.md` - Advanced dbt patterns, complex transformations
+- `snowflake-expert.md` - Warehouse optimization, cost management
+- `tableau-expert.md` - Dashboard performance, BI optimization
+- `dlthub-expert.md` - Data ingestion patterns
+
+### Cursor File-Based Coordination Protocol
+
+When main agent needs specialist consultation:
+
+**Step 1: Main Agent Writes Delegation Request**
+```markdown
+<!-- Create: tasks/[specialist]-request.md -->
+# Delegation Request: [specialist-name]
+
+**Requesting Agent**: [role-name]
+**Confidence**: [0.XX] (below delegation threshold)
+
+## Task
+[Clear description of what needs to be accomplished]
+
+## Current State
+[What exists now, current metrics, problems]
+
+## Requirements
+[Performance targets, quality criteria, business needs]
+
+## Constraints
+[Timeline, dependencies, limitations]
+
+## Expected Deliverable
+[What specialist should provide]
+```
+
+**Step 2: Invoke Specialist in Composer**
+```
+In Composer chat, type:
+@.claude/agents/specialists/[specialist].md
+
+Then in your message:
+"Please analyze tasks/[specialist]-request.md and provide recommendations"
+```
+
+**Step 3: Specialist Writes Findings**
+```markdown
+<!-- Specialist creates: tasks/[specialist]-findings.md -->
+# Specialist Findings: [specialist-name]
+
+**Date**: [YYYY-MM-DD]
+**Request**: tasks/[specialist]-request.md
+**Status**: ✅ Complete
+
+## Analysis Summary
+[Root cause, key insights]
+
+## Recommended Solution
+[Detailed implementation with code, configs, etc.]
+
+## Performance Estimate
+[Before/after metrics, expected improvement]
+
+## Testing Strategy
+[How to validate the solution]
+
+## Implementation Steps
+[Step-by-step deployment instructions]
+
+## Validation Checklist
+[Specific criteria to verify success]
+```
+
+**Step 4: Main Agent Executes**
+- Read `tasks/[specialist]-findings.md`
+- Validate recommendations
+- Implement solution
+- Test thoroughly
+- Document results
+
+**Step 5: Cleanup**
+- After successful execution, archive or delete request/findings files
+
+### Example: Delegating to dbt-expert
+
+```
+[Main Agent - analytics-engineer-role]
+My confidence is 0.55 on complex incremental strategies. Creating delegation request...
+
+[Creates: tasks/dbt-expert-request.md with context]
+
+Please invoke dbt-expert to analyze this:
+@.claude/agents/specialists/dbt-expert.md analyze tasks/dbt-expert-request.md
+
+[User does this in new Composer message]
+
+[dbt-expert analyzes and creates: tasks/dbt-expert-findings.md]
+
+[Main agent reads findings]
+Reviewing dbt-expert recommendations...
+- Incremental config looks correct
+- Deduplication logic is sound
+- Performance estimate reasonable
+
+Proceeding with implementation...
+```
+
+### Agent Invocation Shortcuts
+
+For quick specialist consultation without full delegation protocol:
+
+```
+# Load specialist context inline
+@.claude/agents/specialists/dbt-expert.md
+
+# Ask specific question
+"Based on your expertise, what's the best approach for [specific problem]?"
+
+# Specialist provides guidance in same chat
+# No separate files needed for simple consultations
+```
+
+---
+
+## Project Structure & File Awareness
+
+When working on DA Agent Hub projects, maintain awareness of:
+
+### Core Project Files (Always in Context)
+```
+projects/active/feature-<name>/
+├── README.md           # Navigation hub, progress tracking
+├── spec.md            # Stable requirements (rarely changes)
+├── context.md         # Dynamic state (update frequently)
+└── tasks/             # Agent coordination
+    ├── current-task.md         # Active work
+    ├── [specialist]-request.md  # Delegation requests
+    └── [specialist]-findings.md # Specialist analysis
+```
+
+### Update Patterns
+
+**spec.md** - Only update if requirements change
+- End goals, success criteria
+- Implementation approach
+- Out of scope items
+
+**context.md** - Update frequently during work
+- Current state, active branch
+- Blockers, decisions made
+- Next steps, progress notes
+
+**tasks/current-task.md** - Update as work progresses
+- Current focus area
+- Agent assignments
+- Links to findings
+
+**README.md** - Update at milestones
+- Key decisions made
+- Progress tracker checkboxes
+- Quick links to relevant files
+
+### Cursor-Specific Context Management
+
+**On /start**:
+- Automatically load: README.md, spec.md, context.md, tasks/current-task.md
+- Keep these files in Composer context throughout work
+
+**During development**:
+- Add implementation files to context as needed
+- Keep spec.md and context.md visible
+- Update context.md with progress
+
+**For specialist consultation**:
+- Load specialist agent file: `@.claude/agents/specialists/[name].md`
+- Include relevant task files
+- Maintain project context alongside specialist context
+
+---
+
+## Memory System Access
+
+The DA Agent Hub includes a file-based memory system for patterns and learnings.
+
+### Memory Structure
+```
+.claude/memory/
+├── patterns/                    # Long-term proven patterns
+│   ├── git-workflow-patterns.md
+│   ├── cross-system-analysis-patterns.md
+│   ├── testing-patterns.md
+│   └── cross-tool-integration/
+│       ├── dbt-snowflake-optimization-pattern.md
+│       └── github-investigation-pattern.md
+├── recent/                      # Monthly learnings
+│   ├── 2025-09.md
+│   └── 2025-10.md
+└── templates/                   # Project templates
+```
+
+### Using Memory in Cursor
+
+**Load relevant patterns**:
+```
+@.claude/memory/patterns/dbt-incremental-optimization-pattern.md
+"Apply this pattern to optimize my incremental model"
+```
+
+**Search memory for solutions**:
+```
+# In terminal (Cursor can execute)
+grep -r "incremental model" .claude/memory/patterns/
+```
+
+**Reference in current work**:
+- Memory patterns are markdown files
+- Load into context with @ mention
+- Apply proven solutions to current problems
+
+---
+
+## Git Workflow Integration
+
+### Branch Naming Convention
+- Feature branches: `feature/description`
+- Fix branches: `fix/description`
+
+### Critical: Always Branch from Up-to-Date Main
+**Before starting ANY work** (especially `/start` command):
+```bash
+git checkout main && git pull origin main
+```
+
+This ensures:
+- No conflicts with recent changes
+- Clean starting point
+- Proper branch divergence tracking
+
+### /start Automatic Branch Creation
+The `/start` command automatically:
+1. Creates feature branch: `feature-<project-name>`
+2. Sets up project structure
+3. Creates worktree if configured
+
+### /switch Workflow
+Preserves work by:
+1. Committing changes (WIP commit)
+2. Pushing to remote (backup)
+3. Switching branches cleanly
+
+### PR Creation (After /complete)
+```bash
+gh pr create --title "Complete <project-name>" --body "
+## Summary
+<bullet points of changes>
+
+## Test Plan
+<how to verify changes>
+
+🤖 Generated with [DA Agent Hub - Cursor](https://github.com/dylpickledev/da-agent-hub)
+"
+```
+
+---
+
+## GitHub Integration
+
+All workflow commands integrate with GitHub via `gh` CLI:
+
+### Issue Management
+- `/capture` → Creates issue with 'idea' label
+- `/start` → Adds 'in-progress' label, links project
+- `/complete` → Closes issue with completion comment
+
+### Viewing Ideas
+```bash
+# List all ideas
+gh issue list --label idea
+
+# Filter by category
+gh issue list --label idea --label bi-analytics
+gh issue list --label idea --label data-engineering
+
+# Search ideas
+gh issue list --label idea --search "dashboard"
+```
+
+### Issue Labels (Auto-Applied)
+- `idea` - All captured ideas
+- `in-progress` - Active projects
+- `bi-analytics` - Dashboard/visualization work
+- `data-engineering` - Pipeline/ETL work
+- `analytics-engineering` - dbt/transformation work
+- `architecture` - Platform/infrastructure
+- `ui-development` - Frontend applications
+
+---
+
+## Best Practices for Cursor
+
+### Composer Usage
+1. **Multi-file editing**: Load spec.md, context.md, implementation files simultaneously
+2. **Agent consultation**: Use @ mentions for specialist agents
+3. **Context preservation**: Keep project files in Composer throughout session
+4. **File awareness**: Composer automatically tracks file dependencies
+
+### Workflow Tips
+1. **Start projects with /start**: Loads proper context automatically
+2. **Update context.md frequently**: Helps with /pause and /switch
+3. **Use specialists for edge cases**: Leverage file-based coordination
+4. **Clean up task files**: Archive or delete after delegation complete
+
+### Agent Coordination
+1. **Write clear delegation requests**: Provide full context in request file
+2. **Use @ mentions for quick consultation**: No files needed for simple questions
+3. **Validate specialist output**: Don't blindly execute, understand the why
+4. **Document learnings**: Update context.md with decisions and patterns
+
+### Git & GitHub
+1. **Always pull main before /start**: Avoid conflicts
+2. **Commit frequently**: Small, atomic commits
+3. **Use /switch for context changes**: Non-destructive, preserves work
+4. **Create PRs for review**: Use /complete workflow
+
+---
+
+## Troubleshooting
+
+### Command Not Found
+- Ensure you're in DA Agent Hub repository root
+- Scripts are in `./scripts/` directory
+- Check script is executable: `chmod +x ./scripts/[script].sh`
+
+### GitHub Integration Issues
+- Verify `gh` CLI installed: `gh --version`
+- Authenticate: `gh auth login`
+- Check repository remote: `git remote -v`
+
+### Specialist Coordination Issues
+- Verify agent file exists: `ls .claude/agents/specialists/`
+- Use full path in @ mention: `@.claude/agents/specialists/dbt-expert.md`
+- Ensure request file has full context
+
+### Project Structure Issues
+- Check project directory: `ls projects/active/`
+- Verify files exist: README.md, spec.md, context.md
+- Use `/start` command for proper setup (don't create manually)
+
+---
+
+## Additional Resources
+
+### Knowledge Base
+- **Platform docs**: `knowledge/da-agent-hub/README.md`
+- **Team docs**: `knowledge/da_team_documentation/readme.md`
+- **Agent definitions**: `.claude/agents/` (roles and specialists)
+- **Memory patterns**: `.claude/memory/patterns/`
+
+### Command Reference
+- **All commands**: See individual command sections above
+- **Bash scripts**: `./scripts/` directory
+- **Slash command protocols**: `.claude/commands/` (for reference)
+
+---
+
+*This .cursorrules file implements the DA Agent Hub ADLC workflow in Cursor, providing the same powerful analytics development capabilities as Claude Code through Cursor's native features.*

@@ -1,143 +1,189 @@
+---
+name: role-name-hyphenated
+description: |
+  Action-oriented role description focusing on domain ownership and when to use proactively.
+
+  Use this role when you need expertise in [domain] that requires coordinating multiple specialists and owning end-to-end delivery across [layer/domain] with 80% independent work and 20% specialist delegation for deep expertise.
+model: sonnet
+color: blue
+agent_type: role
+expertise_domains:
+  - primary-domain
+  - secondary-domain
+delegates_to:
+  - specialist-expert-name
+  - another-specialist-name
+---
+
 # [Role Name] Role
 
 ## Role & Expertise
-[Brief description of the role's primary focus and domain ownership. Describe what this role owns end-to-end in the data platform.]
+Brief 2-3 sentence description of the role's domain ownership and primary focus. What layer or domain does this role own end-to-end?
 
-**Role Pattern**: This is a PRIMARY ROLE agent. This role owns [specific domain] workflows end-to-end and delegates domain-specific expertise work to specialists when confidence <0.60 OR specialist knowledge is beneficial.
+**Role Pattern**: This is a PRIMARY ROLE agent. Handles 80% of work independently (confidence ≥0.85), delegates 20% to specialists when confidence <0.60 OR deep domain expertise adds significant value.
 
 ## Core Responsibilities
-- **Primary Ownership**: [What this role owns and is accountable for]
-- **[Responsibility 1]**: [Description]
-- **[Responsibility 2]**: [Description]
-- **[Responsibility 3]**: [Description]
-- **Specialist Delegation**: Recognize when to delegate vs handle directly (confidence threshold: 0.60)
-
-## Capability Confidence Levels
-
-### Primary Expertise (≥0.85)
-*Tasks where this role agent consistently excels and handles independently*
-- [Task type 1]: 0.90 (last updated: project completion date)
-- [Task type 2]: 0.87 (last updated: project completion date)
-- [Task type 3]: 0.92 (last updated: project completion date)
-
-### Secondary Expertise (0.60-0.84)
-*Tasks where role is competent but may benefit from specialist consultation*
-- [Task type 4]: 0.78 (last updated: project completion date)
-- [Task type 5]: 0.72 (last updated: project completion date)
-
-### Requires Specialist (<0.60)
-*Tasks where role should delegate to specialist for expertise*
-- [Task type 6]: 0.55 (DELEGATE to [specialist-name])
-- [Task type 7]: 0.48 (DELEGATE to [specialist-name])
+- **Primary Ownership**: What this role owns and is accountable for delivering
+- **Responsibility 2**: Specific capability this role provides
+- **Responsibility 3**: Another key capability
+- **Responsibility 4**: Cross-functional coordination aspect
+- **Specialist Delegation**: Recognize when to delegate vs handle directly (threshold: 0.60)
 
 ## Delegation Decision Framework
 
 ### When to Handle Directly (Confidence ≥0.85)
-- ✅ Task is within role's core domain expertise
-- ✅ Successfully completed similar tasks before
-- ✅ Clear pattern exists in knowledge base
-- ✅ Low-risk, routine operations
-- ✅ Well-documented, proven approaches
+- ✅ Standard workflows within this role's domain
+- ✅ Well-documented patterns with proven track record
+- ✅ Routine operations with low risk
+- ✅ Basic tool usage and configuration
+- ✅ Straightforward implementations
 
 ### When to Delegate to Specialist (Confidence <0.60)
-- ✅ Task involves specialized tools or deep expertise
-- ✅ Security, compliance, or cost optimization critical
-- ✅ Production deployment with zero-downtime requirement
-- ✅ Cross-system integration with multiple services
-- ✅ Architecture decisions with long-term impact
-- ✅ Complex debugging or performance optimization
+- ✅ Deep tool-specific optimization requiring expertise
+- ✅ Complex architecture decisions with long-term impact
+- ✅ Security-critical or cost-optimization scenarios
+- ✅ Performance tuning beyond standard patterns
+- ✅ Cross-system integration requiring specialist knowledge
 
 ### When to Collaborate (0.60-0.84)
-- ⚠️ Moderate confidence, want validation before implementing
-- ⚠️ Task is complex within your domain
-- ⚠️ Multiple approaches possible, need expert trade-off analysis
+- ⚠️ Moderate complexity where validation adds confidence
+- ⚠️ Multiple valid approaches requiring trade-off analysis
+- ⚠️ Cross-role coordination on shared deliverables
 
-## Specialist Delegation Patterns
+## Primary Specialists
 
-### Primary Specialists for This Role
+**specialist-name** (e.g., dbt-expert):
+- **Delegate when**: Specific scenarios requiring deep expertise (list 2-3 examples)
+- **Provide context**: Task description, current state, requirements, constraints
+- **Receive back**: Validated recommendations, implementation plan, quality validation
+- **Typical cadence**: [High/Medium/Low frequency]
 
-**[Specialist 1 Name]** (e.g., dbt-expert):
-- **When to delegate**: [Complex dbt macros, performance issues, architecture decisions]
-- **What to provide**: [Task description, current state, requirements, constraints]
-- **What you receive**: [Validated dbt models, optimization plans, implementation guides]
-- **Frequency**: [High/Medium/Low]
+**another-specialist** (e.g., snowflake-expert):
+- **Delegate when**: Different specialist scenarios (list 2-3 examples)
+- **Provide context**: Same structure as above
+- **Receive back**: Same structure as above
+- **Typical cadence**: [High/Medium/Low frequency]
 
-**[Specialist 2 Name]** (e.g., snowflake-expert):
-- **When to delegate**: [Warehouse optimization, cost analysis, complex queries]
-- **What to provide**: [Query description, performance metrics, cost constraints]
-- **What you receive**: [Performance tuning, cost reduction plan, query optimization]
-- **Frequency**: [High/Medium/Low]
+## Delegation Protocol
 
-**[Specialist 3 Name]** (e.g., aws-expert):
-- **When to delegate**: [AWS infrastructure, deployment, security configuration]
-- **What to provide**: [Deployment requirements, architecture needs, constraints]
-- **What you receive**: [Infrastructure design, deployment plan, security configs]
-- **Frequency**: [High/Medium/Low]
-
-### Delegation Protocol
-
-**Step 1: Recognize Need**
+**Step 1: Assess Need**
 ```
-Assess confidence level on task
-If <0.60 OR expertise beneficial → Prepare to delegate
+Confidence <0.60 on task? → Prepare to delegate
+Specialist expertise adds significant value? → Prepare to delegate
 ```
 
 **Step 2: Prepare Context**
-```
-context = {
-  "task": "Clear description of what needs to be accomplished",
-  "current_state": "What exists now (use MCP tools to gather if needed)",
-  "requirements": "Performance, cost, security, compliance needs",
-  "constraints": "Timeline, budget, team capabilities, dependencies"
-}
-```
-
-**Step 3: Delegate to Appropriate Specialist**
-```
+```markdown
 DELEGATE TO: [specialist-name]
-PROVIDE: Complete context (above)
-REQUEST: "Validated [solution type] with [specific outputs needed]"
+
+CONTEXT:
+- Task: [Clear description of what needs to be accomplished]
+- Current State: [What exists now - use MCP tools to gather data]
+- Requirements: [Performance, cost, security, compliance targets]
+- Constraints: [Timeline, budget, dependencies, limitations]
+
+REQUEST: "Validated [deliverable type] with [specific quality criteria]"
 ```
 
-**Step 4: Validate Specialist Output**
-```
+**Step 3: Validate Output**
 - Understand the "why" behind recommendations
-- Validate against requirements
+- Validate against original requirements
 - Ask clarifying questions if needed
-- Ensure solution is production-ready
-```
+- Ensure production-ready with rollback plan
 
-**Step 5: Execute with Confidence**
-```
+**Step 4: Execute**
 - Implement specialist recommendations
 - Test thoroughly
-- Document learnings
-- Update confidence levels if applicable
-```
+- Monitor results
+- Document learnings and update confidence levels
 
-## Tools & Technologies Mastery
+## Tools & Technologies
 
 ### Primary Tools (Daily Use)
-- **[Tool 1]**: [Primary tool for this role's domain]
-- **[Tool 2]**: [Secondary tool]
-- **[Tool 3]**: [Integration tool]
+- **Tool 1**: Primary tool for this role's domain with key capabilities
+- **Tool 2**: Secondary tool for integration or specific workflows
+- **Tool 3**: Supporting tool for coordination or validation
 
-### Integration Tools (Regular Use)
-- **[Integration 1]**: [When and how used]
-- **[Integration 2]**: [When and how used]
+### MCP Integration (if applicable)
+- **mcp-server-name**: Direct usage for [specific operations]
+- **Delegate to specialists**: For complex MCP operations requiring deep expertise
 
-### Awareness Level (Understanding Context)
-- [Related domain 1] (enough to coordinate with specialists)
-- [Related domain 2] (enough to prepare good delegation context)
-- [Related domain 3] (enough to validate specialist recommendations)
+### Integration Tools
+- **Integration 1**: When and how this role uses it
+- **Integration 2**: Cross-system coordination approach
+
+## Knowledge Base
+
+### Best Practices (Updated by /complete)
+*Accumulated from successful project outcomes*
+- Pattern 1 from successful projects (confidence: 0.XX, source: project)
+- Pattern 2 proven across multiple implementations
+
+### Common Patterns
+*Proven approaches with code examples when relevant*
+
+#### Pattern Name (Confidence: 0.XX)
+Brief description of when to use this pattern.
+
+```language
+# Code example if applicable
+# Keep concise - full details in external docs
+```
+
+**When to use**: ✅ Scenario 1, ✅ Scenario 2
+**When to avoid**: ❌ Anti-pattern scenario
+
+### Troubleshooting Guide
+
+#### Issue: Common Problem Description
+**Symptoms**: Observable indicators of this problem
+**Root Causes**: 2-3 most common underlying causes
+
+**Diagnostic Steps**:
+1. Step-by-step investigation approach
+2. Specific commands or tools to use
+3. Decision tree for determining root cause
+
+**Resolution** (success rate: XX%):
+- Immediate fix for urgent situations
+- Long-term prevention strategy
+- When to escalate vs handle directly
+
+**Real Example** (date: YYYY-MM-DD, project: name):
+- Symptom, finding, resolution with actual outcome
+
+## Cross-Role Coordination
+
+### With [Other Role Name]
+**Handoff Pattern**: What this role provides → What other role does
+- **This role provides**: Specific deliverables with quality criteria
+- **Other role provides**: What this role needs from them
+- **Communication**: How handoffs happen (notifications, documentation, etc.)
+
+### With [Specialist Name]
+**Consultation Pattern**: When to involve specialist
+- **Escalate for**: Specific scenarios requiring expertise
+- **Provide context**: Information specialist needs
+- **Expect back**: Type of guidance or recommendations
+
+## Output Standards
+
+### Deliverables
+- **Format**: How this role's work is delivered
+- **Quality Criteria**: Standards that must be met
+- **Documentation**: Required documentation and knowledge capture
+
+### Communication Style
+- **Technical Depth**: Appropriate level for different audiences
+- **Stakeholder Adaptation**: How to communicate with business users
+- **Documentation Tone**: Technical precision vs accessibility
 
 ## Performance Metrics
-*Updated by /complete command*
+*Auto-updated by /complete command*
 - **Total project invocations**: 0
 - **Success rate**: 0% (0 successes / 0 attempts)
 - **Average task completion time**: Not yet measured
 - **Delegation success rate**: Not yet measured
-- **Specialist collaboration rate**: Not yet measured
 
 ### Recent Performance Trends
 - **Last 5 projects**: No data yet
@@ -145,112 +191,113 @@ REQUEST: "Validated [solution type] with [specific outputs needed]"
 - **Common success patterns**: To be identified
 - **Common delegation patterns**: To be identified
 
-## Knowledge Base
+---
 
-### Best Practices
-*Accumulated from successful project outcomes*
-- [Best practice 1] (learned from: project name)
-- [Best practice 2] (learned from: project name)
+## Template Design Notes
 
-### Common Patterns
-*Proven approaches this role uses independently*
-- [Pattern 1] (confidence: score, usage: X projects)
-- [Pattern 2] (confidence: score, usage: X projects)
+### Target Length: 200-300 Lines
+Current template: ~200 lines (achieves 67% reduction from 600+ line agents)
 
-### Delegation Patterns That Work
-*Successful specialist consultations*
-- [Delegation scenario 1] → [Specialist consulted] → [Outcome] (success rate: X%)
-- [Delegation scenario 2] → [Specialist consulted] → [Outcome] (success rate: X%)
+**Sections removed from old structure**:
+- ❌ Verbose "How You Think" sections (implicit in patterns)
+- ❌ Redundant capability confidence tables (moved to delegation framework)
+- ❌ Extensive example scenarios (keep 1-2 in troubleshooting only)
+- ❌ Duplicate tool descriptions (concise bullets only)
+- ❌ Over-detailed MCP documentation (reference external docs)
 
-### Troubleshooting Guide
-*Solutions to recurring issues*
-- [Issue 1] → [Solution or specialist to consult] (success rate: X%)
-- [Issue 2] → [Solution or specialist to consult] (success rate: X%)
+**What remains (essential)**:
+- ✅ YAML frontmatter (Claude Code compliance)
+- ✅ Clear delegation framework (when to delegate vs handle)
+- ✅ Specialist coordination (who to delegate to and why)
+- ✅ Proven patterns (real examples from production)
+- ✅ Troubleshooting guide (systematic diagnostic approaches)
+- ✅ Cross-role coordination (handoff patterns)
 
-## Agent Coordination Instructions
+### YAML Frontmatter Rationale
 
-### Input Requirements from Users
-- **Required information**: [What this role needs to start work]
-- **Optional context**: [Additional helpful information]
-- **Format preferences**: [How information should be presented]
+**Required fields** (per Anthropic docs):
+- `name`: Unique identifier (lowercase-hyphenated)
+- `description`: Action-oriented with proactive triggers
+- `model`: sonnet (or 'inherit' for consistency)
 
-### Output Standards to Users
-- **Deliverable format**: [What this role produces]
-- **Documentation requirements**: [How findings should be documented]
-- **Validation checkpoints**: [How to verify work is complete and correct]
+**Role-specific fields** (DA Agent Hub convention):
+- `agent_type`: role (distinguishes from specialists)
+- `expertise_domains`: List of primary domains this role owns
+- `delegates_to`: List of specialist agents this role commonly uses
 
-### Handoff Protocols with Specialists
-- **To [specialist-name]**: [What context to provide, what to expect back]
-- **From [specialist-name]**: [How to validate and integrate specialist guidance]
+**Optional fields**:
+- `color`: Visual identifier in UI (optional but helpful)
 
-### Communication Style
-- **Technical depth**: [Appropriate level of detail for different audiences]
-- **Stakeholder adaptation**: [How to communicate with business users]
-- **Documentation tone**: [Formal, conversational, technical, etc.]
+### Section Ordering Rationale
 
-## Learning & Improvement
+1. **Role & Expertise** (identity) → Who am I?
+2. **Core Responsibilities** (scope) → What do I own?
+3. **Delegation Framework** (decision-making) → When do I delegate?
+4. **Primary Specialists** (coordination) → Who do I work with?
+5. **Delegation Protocol** (process) → How do I delegate?
+6. **Tools & Technologies** (capabilities) → What do I use?
+7. **Knowledge Base** (experience) → What have I learned?
+8. **Cross-Role Coordination** (handoffs) → How do I coordinate?
+9. **Output Standards** (quality) → What do I deliver?
+10. **Performance Metrics** (improvement) → How am I doing?
 
-### Knowledge Gaps Identified
-*Areas needing development or specialist consultation*
-- [Gap 1] (identified in: project name, priority: high/medium/low, delegate to: [specialist])
-- [Gap 2] (identified in: project name, priority: high/medium/low, delegate to: [specialist])
+This ordering follows natural thought flow: identity → scope → decision-making → execution → quality
 
-### Improvement Priorities
-*Based on confidence scores and project needs*
-1. [Priority 1] (current confidence: X, target: Y, strategy: more projects OR delegate to specialist)
-2. [Priority 2] (current confidence: X, target: Y, strategy: more projects OR delegate to specialist)
+### Line Count Per Section (Approximate)
 
-### Success Metrics
-*Goals for this role's effectiveness*
-- Achieve ≥0.85 confidence in [developing area] OR effective delegation pattern
-- Maintain ≥0.90 confidence in primary expertise areas
-- Delegation success rate ≥90% (specialist recommendations work)
-- Task completion time within target ranges
+- YAML Frontmatter: 15 lines
+- Role & Expertise: 10 lines
+- Core Responsibilities: 8 lines
+- Delegation Framework: 25 lines
+- Primary Specialists: 20 lines
+- Delegation Protocol: 30 lines
+- Tools & Technologies: 20 lines
+- Knowledge Base: 40 lines (patterns + troubleshooting)
+- Cross-Role Coordination: 15 lines
+- Output Standards: 15 lines
+- Performance Metrics: 10 lines
+- Template Design Notes: 30 lines
+
+**Total: ~240 lines** (60% reduction from current 600+ line agents)
+
+### What NOT to Include
+
+❌ **Remove these from existing agents**:
+- Capability confidence tables with scores (implicit in delegation framework)
+- "How You Think" or "Approach to X" prose sections (patterns show this)
+- Extensive MCP tool documentation (reference external MCP docs)
+- Multiple example interaction scenarios (one in troubleshooting is enough)
+- Verbose best practices sections (keep 2-3 key patterns max)
+- Redundant tool descriptions (bullets, not paragraphs)
+- Agent coordination warnings about "never call agents directly" (system handles this)
+
+✅ **Keep these (essential)**:
+- Real production examples in troubleshooting (with dates, metrics)
+- Specific delegation triggers and specialist recommendations
+- Proven code patterns with confidence levels
+- Systematic diagnostic approaches
+- Clear handoff protocols
+- Quality standards and validation criteria
+
+### Usage Instructions
+
+**For rewriting existing role agents**:
+1. Copy this template structure
+2. Preserve YAML frontmatter fields (add required fields)
+3. Extract core delegation patterns from existing agent
+4. Keep 1-2 best production examples in troubleshooting
+5. Remove verbose "how you think" prose
+6. Consolidate tool descriptions to bullets
+7. Target 200-300 lines total
+
+**For creating new role agents**:
+1. Start with this template
+2. Define domain ownership clearly
+3. Identify 2-3 primary specialists to delegate to
+4. Set confidence thresholds (≥0.85 handle, <0.60 delegate)
+5. Add proven patterns as role gains experience
+6. Let /complete command update performance metrics
 
 ---
 
-## Template Usage Instructions
-
-### For Creating New Role Agents
-
-1. **Copy this template** to `.claude/agents/roles/[role-name]-role.md`
-2. **Define role ownership**: What domain/layer does this role own?
-3. **Set confidence levels**: Estimate initial expertise levels
-4. **Map specialists**: Which specialists will this role delegate to?
-5. **Define delegation triggers**: When to delegate vs handle directly
-6. **Document patterns**: Add role-specific workflows and approaches
-
-### Key Sections to Customize
-
-**Must customize**:
-- Role & Expertise (domain ownership description)
-- Core Responsibilities (what this role does)
-- Delegation Decision Framework (when to delegate)
-- Specialist Delegation Patterns (which specialists to use)
-- Tools & Technologies Mastery (primary tools for this role)
-
-**Auto-updated by /complete**:
-- Performance Metrics
-- Confidence Levels
-- Recent Performance Trends
-- Knowledge Base (patterns, best practices)
-
-### Role vs Specialist Pattern
-
-**Role agents** (this template):
-- Own end-to-end workflows in their domain
-- Handle 80% of work independently (confidence ≥0.85)
-- Delegate 20% to specialists (confidence <0.60 OR expertise needed)
-- Coordinate across role boundaries
-- Focus on delivery and execution
-
-**Specialist agents** (see specialist-template.md):
-- Provide expert consultation when delegated to
-- Use MCP tools + domain expertise
-- Return validated, expert recommendations
-- Focus on correctness and quality
-- Not involved unless explicitly consulted
-
----
-
-*This role template follows the research-backed Role → Specialist (with MCP) architecture pattern for correctness-first outcomes. Updated automatically by /complete command for continuous improvement.*
+*This role agent template follows Anthropic Claude Code best practices for concise, action-oriented agent definitions with clear delegation patterns and minimal redundancy.*

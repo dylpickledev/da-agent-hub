@@ -157,26 +157,18 @@ Templates encode correct architecture patterns:
 - Pipeline setup and orchestration (batch AND streaming)
 - Source system integration, data quality at ingestion
 - Chooses right tool (dlthub vs Prefect) based on requirements
-- Delegates to dlthub-expert for complex ingestion patterns
-
-**Data Architect** (`data-architect-role`) - Strategic platform decisions and system design
-- Architecture patterns, technology selection, cross-system integration
-- Platform roadmap, governance, standards
-- Coordinates with all specialists for system-level decisions
+- Creates specialist agents when deep tool expertise needed
 
 ### Tool Specialists (Consultation Layer - 20% Edge Cases)
 Role agents delegate to specialists who combine deep domain expertise with MCP tool access for informed, validated recommendations.
 
 **Data Platform (Available)**:
 - `dbt-expert`: SQL transformations, dbt patterns (MCP-enabled for dbt Cloud API)
-- `snowflake-expert`: Warehouse optimization, cost analysis (MCP-enabled for Snowflake)
-- `dlthub-expert`: Data ingestion patterns for dlthub pipelines
+- `snowflake-expert`: Warehouse optimization, cost analysis
 - `tableau-expert`: BI optimization and dashboard performance
+- `claude-code-expert`: Claude Code configuration specialist
 
-**Cross-Functional (Available)**:
-- `github-sleuth-expert`: Repository analysis, issue investigation (MCP-enabled for GitHub)
-
-**Note**: Other specialists (aws-expert, business-context, documentation-expert, etc.) were removed in cleanup. Role agents now handle most work directly or can request specialist agent creation when needed.
+**Note**: For other specialist needs (cloud infrastructure, business context, orchestration tools), create specialist agents using templates in `.claude/agents/specialists/specialist-template.md`.
 
 **Pattern**: Role agents delegate when confidence <0.60 OR domain expertise needed
 **Specialists**: Use MCP tools + expertise to provide validated, correct recommendations
@@ -399,10 +391,10 @@ When working with GitHub repositories, use smart context resolution to avoid spe
 ```bash
 # Resolve repository context from config/repositories.json
 python3 scripts/resolve-repo-context.py dbt_cloud
-# Output: graniterock dbt_cloud
+# Output: YOUR_ORG dbt_cloud
 
 # Use resolved context in GitHub MCP operations
-mcp__github__list_issues owner="graniterock" repo="dbt_cloud"
+mcp__github__list_issues owner="YOUR_ORG" repo="dbt_cloud"
 ```
 
 ### Available Commands
@@ -417,50 +409,61 @@ All specialist agents working with GitHub should:
 2. Use explicit owner/repo parameters in all GitHub MCP operations
 3. Reference pattern documentation: `.claude/memory/patterns/github-repo-context-resolution.md`
 
-**Benefit**: Eliminates cognitive overhead of remembering "graniterock" for every GitHub operation while maintaining explicit, correct MCP calls.
+**Benefit**: Eliminates cognitive overhead of remembering organization name for every GitHub operation while maintaining explicit, correct MCP calls.
 
 ## Knowledge Repository Structure
 
-### Team Documentation
-`knowledge/da_team_documentation/` - Data & Analytics team structured documentation (data architecture, integrations, products, templates)
+### Platform Documentation
+`knowledge/platform/` - ADLC Framework platform documentation organized by lifecycle phases:
 
-### Team Knowledge Vault
-`knowledge/da_obsidian/` - Data & Analytics team Obsidian vault for raw notes and unrefined ideas before ADLC planning
+- **`planning/`** - ADLC Plan Phase (idea management, strategic planning, GitHub issue workflows)
+- **`development/`** - ADLC Develop/Test/Deploy (agent development, VS Code integration, context management)
+- **`operations/`** - ADLC Operate/Observe/Discover/Analyze (cross-repo coordination, troubleshooting)
+- **`architecture/`** - System design, agent capabilities, confidence routing patterns
+- **`mcp-servers/`** - MCP integration guides (dbt, AWS docs, Slack, filesystem)
+- **`specialists/`** - Specialist agent documentation and patterns
+- **`training/`** - Agent learning, chat analysis, continuous improvement
 
-### DA Agent Hub Platform Documentation
-`knowledge/da-agent-hub/` - Complete platform documentation organized by ADLC phases:
-- **Planning Layer** (`planning/`): Idea management and strategic planning
-- **Development Layer** (`development/`): Local development and agent coordination
-- **Operations Layer** (`operations/`): Automated operations and cross-repo coordination
+**See `knowledge/platform/README.md` for complete navigation guide**
 
-### Production Applications Documentation
-`knowledge/applications/` - Comprehensive documentation for deployed applications
+### Extending the Knowledge Base
 
-**Three-Tier Documentation Architecture**:
+As you build your AI-augmented workflow, create additional knowledge directories for your needs:
+
+**Example: Team Documentation**
+```
+knowledge/team/
+├── architecture/          # Your data architecture docs
+├── integrations/          # System integration guides
+└── products/              # Product/service documentation
+```
+
+**Example: Application Documentation**
+```
+knowledge/applications/
+└── <app-name>/
+    ├── architecture/      # System design, data flows
+    ├── deployment/        # Deployment runbooks
+    └── operations/        # Monitoring, troubleshooting
+```
+
+**Three-Tier Documentation Pattern** (Recommended for Production Applications):
 
 **Tier 1: Repository README** (Lightweight, Developer-Focused)
-- **Location**: `<repo>/README.md` (e.g., `react-sales-journal/README.md`)
+- **Location**: `<your-app-repo>/README.md`
 - **Purpose**: Get developers productive fast
-- **Contains**: App purpose, local dev setup, npm commands, link to knowledge base
-- **Audience**: Human developers, AI doing code-level work
+- **Contains**: App purpose, local dev setup, commands, link to knowledge base
 - **Size**: < 200 lines
 
 **Tier 2: Knowledge Base** (Comprehensive, Cross-System)
 - **Location**: `knowledge/applications/<app-name>/`
 - **Purpose**: Complete reference for deployment, operations, architecture
-- **Structure**:
-  - `architecture/` - System design, data flows, infrastructure
-  - `deployment/` - Deployment runbooks, Docker builds, AWS config
-  - `operations/` - Monitoring, troubleshooting, incident response
 - **Audience**: AI agents coordinating deployments/operations
-- **Size**: Unlimited - source of truth
 
 **Tier 3: Agent Pattern Index** (Pointers + Confidence)
-- **Location**: `.claude/agents/specialists/<agent>.md` (e.g., `aws-expert.md`)
+- **Location**: `.claude/agents/specialists/<agent>.md`
 - **Purpose**: Help agents find proven patterns quickly
-- **Contains**: Pattern name, confidence score, link to Tier 2, when to use
-- **Audience**: AI agents deciding what pattern to apply
-- **Size**: Index only, not full content
+- **Contains**: Pattern name, confidence score, link to Tier 2 docs
 
 **Key Principles**:
 - **Single Source of Truth**: Each piece of info lives in ONE canonical location
@@ -468,22 +471,73 @@ All specialist agents working with GitHub should:
 - **Task-Aware Discovery**: Agents read what they need, when they need it
 - **Layer-Appropriate Detail**: Match detail level to audience needs
 
-**Example Flow**:
-```
-Agent Task: "Deploy Sales Journal update"
-1. Check ui-ux-developer-role.md → Known Applications → Find knowledge/applications/sales-journal/
-2. Read knowledge/applications/sales-journal/deployment/production-deploy.md → Complete runbook
-3. Delegate AWS work → aws-expert reads same knowledge base docs + applies patterns
+## Git Workflow & Security Rules
+
+### Critical Security Rules - Protected Branches
+
+**NEVER commit directly to**: `main`, `master`, `production`, `prod`, `release/*`, `hotfix/*`
+
+**Mandatory Workflow**:
+1. **ALWAYS create feature branch** before making any code changes
+2. **ALWAYS create Pull Request** for code review and approval
+3. **NEVER push directly** to protected branches
+4. **NEVER merge without approval** (except for documentation-only changes)
+
+**Pre-Commit Safety Check** - Claude MUST verify branch before committing:
+```bash
+CURRENT_BRANCH=$(git branch --show-current)
+PROTECTED_BRANCHES=("main" "master" "production" "prod")
+
+for branch in "${PROTECTED_BRANCHES[@]}"; do
+    if [ "$CURRENT_BRANCH" = "$branch" ]; then
+        echo "❌ ERROR: Cannot commit to protected branch '$CURRENT_BRANCH'"
+        echo "Please create a feature branch: git checkout -b feature/your-feature-name"
+        exit 1
+    fi
+done
 ```
 
-## Repository Branch Structures
+**If user requests commit to protected branch**:
+1. **Stop immediately** - Do not execute the commit
+2. **Explain the security policy** - Protected branches require PR workflow
+3. **Offer to create feature branch** - Suggest branch name based on work
+4. **Create PR after commit** - Ensure changes go through approval process
+
+### Branch Naming Conventions
+
+**Standard prefixes**:
+- `feature/[description]` - New features
+- `fix/[description]` - Bug fixes
+- `docs/[description]` - Documentation updates
+- `refactor/[description]` - Code refactoring
+- `test/[description]` - Testing improvements
+
+**Best practices**: Use descriptive, kebab-case names (e.g., `feature/add-customer-dashboard`)
+
+### Repository-Specific Branch Structures
 
 **dbt_cloud**: master (prod), dbt_dw (staging) - Branch from dbt_dw
 **dbt_errors_to_issues**: main (prod) - Branch directly from main
 **roy_kent**: master (prod) - Branch directly from master
 **sherlock**: main (prod) - Branch directly from main
 
-*See `.claude/memory/patterns/git-workflow-patterns.md` for detailed workflows*
+### Standard Workflow
+
+**CRITICAL - Always start from up-to-date main**:
+```bash
+git checkout main
+git pull origin main
+git checkout -b feature/your-feature-name
+```
+
+**Complete workflow checklist**:
+1. ✅ Sync with main branch before creating features
+2. ✅ Create descriptive branch names
+3. ✅ Keep branches focused and atomic
+4. ✅ Test locally before pushing
+5. ✅ Create PR with clear description
+6. ✅ Wait for approval
+7. ✅ Clean up branches after merge
 
 ## ADLC Continuous Improvement Strategy
 
@@ -510,7 +564,7 @@ When completing projects, extract learnings to appropriate locations based on co
   3. Add to "Known Applications" in relevant role agents (e.g., ui-ux-developer-role.md)
   4. Create lightweight README in actual repo (Tier 1) linking to knowledge base
 
-**Platform/Tool Patterns** → `knowledge/da-agent-hub/`
+**Platform/Tool Patterns** → `knowledge/platform/`
 - **When**: Discovering reusable patterns for ADLC workflow
 - **Structure**: Organized by ADLC phase (planning/, development/, operations/)
 - **Examples**: Testing frameworks, git workflows, cross-system analysis patterns
@@ -548,7 +602,7 @@ Create separate improvement PRs for:
 
 **Usage**: `./scripts/analyze-claude-chats.sh`
 
-**Results**: `knowledge/da-agent-hub/training/analysis-results/` (local only)
+**Results**: `knowledge/platform/training/analysis-results/` (local only)
 
 ### Continuous Learning Loop
 ```
@@ -574,6 +628,6 @@ Create separate improvement PRs for:
 **Git Workflows**: `.claude/memory/patterns/git-workflow-patterns.md`
 **Testing Patterns**: `.claude/memory/patterns/testing-patterns.md`
 **Cross-System Analysis**: `.claude/memory/patterns/cross-system-analysis-patterns.md`
-**VS Code Worktrees**: `knowledge/da-agent-hub/development/vscode-worktree-integration.md`
+**VS Code Worktrees**: `knowledge/platform/development/vscode-worktree-integration.md`
 **Agent Definitions**: `.claude/agents/`
-**Platform Documentation**: `knowledge/da-agent-hub/README.md`
+**Platform Documentation**: `knowledge/platform/README.md`

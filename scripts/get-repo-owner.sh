@@ -6,7 +6,7 @@
 #
 # Usage:
 #   ./scripts/get-repo-owner.sh dbt_cloud
-#   # Output: graniterock
+#   # Output: YOUR_ORG
 #
 # Exit codes:
 #   0 - Success

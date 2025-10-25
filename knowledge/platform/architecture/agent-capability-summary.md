@@ -1,207 +1,147 @@
-# Agent Capability Summary: DA Agent Hub AI Platform
+# Agent Capability Summary: Claude ADLC Framework
 
 ## Overview
-The DA Agent Hub provides a comprehensive AI-powered Analytics Development Lifecycle (ADLC) platform with **8 role-based agents**, **15+ tool specialists**, and **12 MCP server integrations** spanning cloud infrastructure, data platforms, BI tools, and development workflows.
+The Claude ADLC Framework provides a foundational AI-powered Analytics Development Lifecycle (ADLC) platform with **3 role-based agents**, **4 specialist agents**, and **1 MCP server integration** - designed as a starting point that you can extend for your specific data stack.
 
 ---
 
 ## 🎭 Role-Based Agents (Primary Layer)
 
-### Production-Ready Roles
-1. **Analytics Engineer** - SQL transformations, dbt modeling, data warehouse optimization
-2. **Data Engineer** - Pipeline orchestration (dlthub, Prefect, Airbyte), source integration
-3. **BI Developer** - Tableau/Power BI dashboards, enterprise reporting
-4. **UI/UX Developer** - Streamlit/React applications, data interfaces
-5. **Data Architect** - Platform strategy, system design, technology selection
-6. **Business Analyst** - Requirements gathering, stakeholder alignment
-7. **QA Engineer** - Testing strategies, data quality validation
-8. **Project Manager** - Delivery coordination, UAT frameworks
+### Included Roles
+1. **Analytics Engineer** (`analytics-engineer-role`) - SQL transformations, dbt modeling, data warehouse optimization
+2. **Data Engineer** (`data-engineer-role`) - Pipeline orchestration, source integration, data ingestion
+3. **Onboarding Agent** (`onboarding-agent`) - Setup assistance, MCP configuration, ADLC workflow guidance
 
-**Delegation Pattern**: Roles handle 80% independently, delegate to specialists for deep expertise
+**Delegation Pattern**: Roles handle 80% of work independently, delegate to specialists for deep technical expertise (20% of cases)
 
 ---
 
 ## 🔧 Tool Specialists (Consultation Layer)
 
-### Cloud & Infrastructure
-- **aws-expert**: AWS infrastructure (EC2, ECS, ALB, CloudFormation) via `aws-api`, `aws-docs` MCPs
-- **azure-expert**: Azure platform (future capability)
+### Included Specialists
+- **dbt-expert**: SQL transformations, dbt Cloud patterns via `dbt-mcp`
+- **snowflake-expert**: Warehouse optimization, cost analysis (uses dbt-mcp for queries)
+- **tableau-expert**: Dashboard optimization, BI best practices
+- **claude-code-expert**: Claude Code configuration, agent design, MCP integration patterns
 
-### Data Platform
-- **dbt-expert**: SQL transformations, dbt Cloud via `dbt-mcp`, `snowflake-mcp`
-- **snowflake-expert**: Warehouse optimization, cost analysis via `snowflake-mcp`
-- **orchestra-expert**: Workflow orchestration (Orchestra, Prefect, Airbyte coordination)
-- **prefect-expert**: Python workflows via `prefect-mcp`
-- **dlthub-expert**: Data ingestion patterns
-
-### BI & Visualization
-- **tableau-expert**: Dashboard optimization, Tableau Server/Cloud patterns
-
-### Development
-- **react-expert**: React.js applications, AWS deployment
-- **streamlit-expert**: Streamlit apps, corporate dashboards
-- **ui-ux-expert**: User experience design
-
-### Cross-Functional
-- **documentation-expert**: Standards enforcement, GraniteRock patterns
-- **github-sleuth-expert**: Repository analysis, issue investigation via `github-mcp`
-- **business-context**: ClickUp requirements, stakeholder alignment
-- **cost-optimization-specialist**: Cross-platform cost analysis
-- **data-quality-specialist**: Testing architecture, validation strategies
+**Research-Only Mode**: All specialists provide expert recommendations but don't execute directly. Main Claude implements their guidance.
 
 ---
 
 ## 🔌 MCP Server Integrations
 
-### Cloud & Infrastructure
-- **aws-api**: Execute AWS CLI commands, resource management
-- **aws-docs**: Search/read AWS documentation, recommendations
+### Included MCP Servers
+- **dbt-mcp** (`@dylpickle/dbt-cloud-mcp`): dbt Cloud API integration
+  - Run models, inspect schemas, execute queries
+  - Job management and metadata discovery
+  - See: `knowledge/platform/mcp-servers/dbt-mcp-integration-guide.md`
 
-### Data Platform
-- **snowflake-mcp**: Query execution, object management (databases, schemas, tables, views)
-- **dbt-mcp**: Model inspection, job execution, metric discovery (dbt Cloud)
+### Adding More MCP Servers
+The framework is designed to easily integrate additional MCP servers for your stack:
 
-### Development & Collaboration
-- **github-mcp**: Repository operations, PR workflows, issue management
-- **slack-mcp**: Channel messaging, thread replies, user lookups
-- **filesystem-mcp**: File operations, directory navigation
+**Cloud & Infrastructure Examples**:
+- `aws-mcp`: AWS service management
+- `azure-mcp`: Azure platform integration
 
-### Orchestration & Monitoring
-- **orchestra-mcp**: Workflow management (custom integration)
-- **prefect-mcp**: Flow execution, deployment management (custom integration)
+**Data Platform Examples**:
+- `snowflake-mcp`: Direct warehouse queries (vs dbt-mcp proxy)
+- `postgres-mcp`: PostgreSQL database access
+- `bigquery-mcp`: Google BigQuery integration
 
-### IDE & Development
-- **ide-mcp**: VS Code diagnostics, Jupyter kernel execution
-- **sequential-thinking-mcp**: Chain-of-thought reasoning, complex problem decomposition
+**Development & Collaboration Examples**:
+- `github-mcp`: Repository operations, PR workflows
+- `slack-mcp`: Team notifications and alerts
+- `filesystem-mcp`: Advanced file operations
+
+See `.claude/mcp.json` for configuration and `knowledge/platform/mcp-servers/` for integration guides.
 
 ---
 
 ## 🚀 Key Capabilities
 
-### 1. Cross-System Orchestration
-Coordinate work across AWS + Snowflake + dbt + Tableau + GitHub with specialist delegation:
+### 1. Intelligent Delegation
+Agents use confidence-based routing to decide when to consult specialists:
 ```
 Role Agent (e.g., Analytics Engineer)
-    ↓ Delegates to specialists when needed
-Specialists (dbt-expert, snowflake-expert)
-    ↓ Use MCP tools for validated recommendations
-Main Claude executes MCP calls + implements recommendations
+    ↓ Confidence ≥0.85: Handle directly (80% of work)
+    ↓ Confidence <0.60: Delegate to specialist (20% of work)
+Specialist (e.g., dbt-expert)
+    ↓ Provides expert recommendation using MCP tools
+Main Claude executes recommendation
 ```
 
-### 2. End-to-End Application Delivery
-- **UI/UX Developer** → React/Streamlit development
-- **aws-expert** → ECS deployment, ALB configuration, Docker builds
-- **github-sleuth-expert** → Issue tracking, PR workflows
-- **QA Engineer** → Testing validation
+### 2. Extensible Architecture
+The framework provides templates for adding:
+- **New Role Agents**: `.claude/agents/roles/role-template.md`
+- **New Specialists**: `.claude/agents/specialists/specialist-template.md`
+- **New MCP Servers**: `knowledge/platform/mcp-servers/` integration guides
 
 ### 3. Production-Validated Patterns
 Specialists maintain confidence scores for proven patterns:
-- **ALB OIDC Authentication** (confidence: 0.95) - Production-validated
-- **ECS Multi-Service Deployment** (confidence: 0.90) - Sales Journal app
-- **dbt Semantic Layer** (confidence: 0.85) - Analytics engineering
-
-### 4. Knowledge-Driven Decision Making
-Three-tier documentation architecture:
-- **Tier 1**: Lightweight repo READMEs (developer quick-start)
-- **Tier 2**: Comprehensive knowledge base (`knowledge/applications/`)
-- **Tier 3**: Agent pattern indexes (confidence + pointers)
-
-### 5. Automated Quality Assurance
-- **QA Engineer** delegates to data-quality-specialist
-- dbt testing architecture via `dbt-mcp`
-- Snowflake validation via `snowflake-mcp`
-- GitHub issue creation for tracking
-
-### 6. Cost Optimization
-- **cost-optimization-specialist** analyzes Snowflake, AWS, Tableau spending
-- Cross-platform recommendations
-- Warehouse sizing, compute pool optimization
+- **dbt Incremental Models** (confidence: 0.90) - Production-tested performance
+- **Snowflake Query Optimization** (confidence: 0.85) - Cost reduction patterns
+- **Dashboard Troubleshooting** (confidence: 0.88) - Systematic debugging approach
 
 ---
 
-## 🎯 Current Production Applications
+## 📈 Extending Your Platform
 
-### Known Deployed Systems
-1. **Sales Journal** (React + FastAPI)
-   - ECS deployment, ALB OIDC auth, multi-service Docker
-   - Full knowledge base: `knowledge/applications/sales-journal/`
+### Adding New Roles
+Create role agents for your team's needs:
+- **BI Developer**: Dashboard design, enterprise reporting
+- **Data Architect**: Platform strategy, system design
+- **QA Engineer**: Testing strategies, quality validation
+- **MLOps Engineer**: Model deployment, monitoring
 
-2. **App Portal** (React + Node.js)
-   - Application launcher, Azure AD integration
-   - AWS infrastructure patterns documented
+Use `.claude/agents/roles/role-template.md` as starting point.
 
----
+### Adding New Specialists
+Create specialists for your specific tools:
+- **airflow-expert**: Orchestration patterns
+- **fivetran-expert**: Data replication best practices
+- **looker-expert**: LookML modeling and optimization
+- **your-tool-expert**: Custom internal tooling
 
-## 📊 Workflow Automation
+Use `.claude/agents/specialists/specialist-template.md` as starting point.
 
-### ADLC Slash Commands
-- `/idea` → GitHub issue creation with auto-labeling
-- `/research` → Deep exploration and feasibility analysis
-- `/roadmap` → Strategic planning from GitHub issues
-- `/start` → Project setup with worktree management
-- `/complete` → Archive + cleanup + learning extraction
-- `/switch` → Zero-loss context switching
-
-### GitHub Actions Integration
-- Automated error detection → AI investigation → Cross-repo PRs
-- dbt test failures → Issue creation → Root cause analysis
-
----
-
-## 🔒 Security & Governance
-
-### Protected Branch Enforcement
-- **NEVER** commit to main/master/production directly
-- Feature branch + PR workflow mandatory
-- Exception: da-agent-hub documentation only
-
-### Credential Management
-- 1Password integration for secrets
-- Environment variable references (`${SLACK_BOT_TOKEN}`)
-- No hardcoded credentials
+### Adding New MCP Servers
+Integrate your critical tools via MCP:
+1. Find or create MCP server for your tool
+2. Add configuration to `.claude/mcp.json`
+3. Create integration guide in `knowledge/platform/mcp-servers/`
+4. Update specialist agents to use new MCP capabilities
 
 ---
 
-## 💡 Continuous Learning System
+## 🎯 Design Philosophy
 
-### Chat Analysis & Improvement
-- Privacy-preserving conversation analysis
-- Effectiveness metrics extraction
-- Automatic pattern discovery via `/complete`
-- Agent capability enhancement recommendations
+**Start Small, Grow Deliberately**:
+- Included agents cover core data workflows (dbt + BI)
+- Templates make it easy to add your specific tools
+- Patterns show how mature systems scale
+- Focus on what you actually use, not everything possible
 
----
+**Quality Over Quantity**:
+- Each agent should solve real problems for your workflow
+- Specialists should have deep expertise in their domain
+- MCP integrations should enable capabilities you can't get otherwise
 
-## 🚧 Known Limitations
-
-1. **Azure Integration**: azure-expert defined but no MCP server yet
-2. **Tableau MCP**: Limited functionality compared to other platforms
-3. **Orchestra/Prefect MCPs**: Custom implementations, not official
-4. **Production Validation**: Some patterns remain confidence <0.80
-
----
-
-## 📈 Effectiveness Metrics
-
-- **15x Token Cost Justified**: Specialist consultation yields significantly better outcomes (Anthropic research)
-- **Correctness > Speed**: Production-ready code on first attempt
-- **Knowledge Preservation**: Pattern extraction from every completed project
-- **Cross-System Coordination**: Eliminate manual integration work
+**Learn by Building**:
+- The framework is designed to teach AI-augmented workflows
+- Templates and examples show patterns to follow
+- Documentation explains not just "what" but "why"
 
 ---
 
-## 🔗 Related Documentation
+## 📚 Documentation Structure
 
-- **[Confidence Routing](confidence-routing.md)**: How agents decide when to delegate
-- **[Agent Development](../development/agent-development.md)**: Creating custom specialists
-- **[MCP Servers](../mcp-servers/)**: Detailed MCP integration documentation
-- **[Main README](../../README.md)**: Complete system overview
-
----
-
-**Bottom Line**: You have a production-grade AI development platform capable of end-to-end analytics delivery - from ideation through deployment and operations - with specialist expertise across the modern data stack (Snowflake, dbt, Tableau, AWS) and development tools (React, Streamlit, GitHub, Slack).
+- **Agent Definitions**: `.claude/agents/` - All role and specialist agent configurations
+- **MCP Integration**: `knowledge/platform/mcp-servers/` - Server setup and usage guides
+- **Architecture Patterns**: `knowledge/platform/architecture/` - System design and delegation patterns
+- **Development Guides**: `knowledge/platform/development/` - Building custom agents and skills
 
 ---
 
-*Last Updated: 2025-10-09*
-*Version: 1.0*
+**Version**: 2.0.0 (Public Framework Edition)
+**Last Updated**: 2025-10-25
+**Focus**: Starter platform that teaches extensibility patterns

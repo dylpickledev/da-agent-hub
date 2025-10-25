@@ -13,8 +13,8 @@ Get started with DA Agent Hub in seconds using VS Code devcontainers.
 
 1. **Clone and open**:
    ```bash
-   git clone https://github.com/dylpickledev/da-agent-hub.git
-   cd da-agent-hub
+   git clone https://github.com/dylpickledev/claude-adlc-framework.git
+   cd claude-adlc-framework
    code .
    ```
 
